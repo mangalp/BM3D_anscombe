@@ -28,7 +28,7 @@ for f in files:
     imgo=None
     for i in range(orientations):
         string="o"+str(i)
-        fname=f.replace('o0.tif',string+'.tif').replace( path+"o0/",path+string+'/' )
+        fname=f.replace('_o0_','_'+string+'_').replace( path+"o0/",path+string+'/' )
         print(fname)
         img= imread(fname)
         img=np.swapaxes(img,0,int(args.axis))
@@ -53,11 +53,11 @@ for f in files:
         if len(imgo.shape)==len(img.shape):
             imgo=np.swapaxes(imgo,0,int(args.axis))
             print(imgo.shape, (imgo.size//(imgo.shape[-1]*imgo.shape[-2]),imgo.shape[-2],imgo.shape[-1] ))
-            #imgo=np.reshape(imgo,( imgo.size//(imgo.shape[-1]*imgo.shape[-2]),imgo.shape[-2],imgo.shape[-1] ) )
+            imgo=np.reshape(imgo,( imgo.size//(imgo.shape[-1]*imgo.shape[-2]),imgo.shape[-2],imgo.shape[-1] ) )
         fname=os.path.basename(f)
-        nameo=path+"join/" + fname.replace('_o0.tif','_join.tif')
-        print(nameo)
-        imwrite(nameo, imgo)
+        nameo=path+"join/" + fname.replace('_o0_','_join_')
+        print(nameo, imgo.shape)
+        imwrite(nameo, imgo.astype(np.float32))
 
 
 
