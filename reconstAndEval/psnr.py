@@ -4,7 +4,8 @@ import argparse
 import glob
 from tifffile import imread, imwrite
 import numpy as np
-
+from skimage.metrics import structural_similarity as ssim
+import os
 
 def PSNR(gt, pred, range_= None ):
     if range_ is None:
@@ -29,6 +30,12 @@ def bestPsnr(gt,pred):
     gt_=zero_mean(gt)/np.std(gt)
     return PSNR(zero_mean(gt_), fix(gt_,pred),ra)
 
+def bestSSIM(gt,pred):
+    ra=(np.max(gt)-np.min(gt))/np.std(gt)
+    #ra=(np.max(gt)-np.min(gt))/np.std(gt)
+    gt_=zero_mean(gt)/np.std(gt)
+    return ssim(zero_mean(gt_), fix(gt_,pred),range=np.max(gt_) - np.min(gt_))
+
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--input", help="path to input data", default='./*.tif')
 parser.add_argument("--gt", help="path to ground truth data", default='./*.tif')
@@ -39,7 +46,7 @@ inputFiles=sorted(glob.glob(str(args.input)))
 gtFiles=sorted(glob.glob(str(args.gt)))
 
 
-
+print("PSNR\t cPSNR\t SSIM\t filename")
 for i in range(len(inputFiles) ):
     iname=inputFiles[i]
     gtname=gtFiles[i%len(gtFiles)]
@@ -47,4 +54,10 @@ for i in range(len(inputFiles) ):
         continue
     imgIn=imread(iname)
     imgGT=imread(gtname)
-    print(PSNR(imgGT,imgIn), bestPsnr(imgGT,imgIn), inputFiles[i])
+    ssim_val = ssim(imgGT, imgIn, data_range=np.max(imgGT) - np.min(imgGT))
+    best_ssim_val = bestSSIM(imgGT, imgIn)
+    print(round(PSNR(imgGT,imgIn),2), "\t",
+          round(bestPsnr(imgGT,imgIn),2),
+          "\t",round(ssim_val,3),
+    #      "\t",round(best_ssim_val,3),"\t" ,
+          "\t",os.path.basename(inputFiles[i]) )
