@@ -36,6 +36,17 @@ def bestSSIM(gt,pred):
     gt_=zero_mean(gt)/np.std(gt)
     return ssim(zero_mean(gt_), fix(gt_,pred),range=np.max(gt_) - np.min(gt_))
 
+def bestShiftPsnr(gt,pred):
+    result=0
+    gt_=gt[1:-1,1:-1]
+    sa=gt.shape[0]
+    sb=gt.shape[1]
+    for a in range(3):
+        for b in range(3):
+            pred_=pred[2-a:sa-a,2-b:sb-b]
+            result=max(result,bestPsnr(gt_,pred_))
+    return result
+
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--input", help="path to input data", default='./*.tif')
 parser.add_argument("--gt", help="path to ground truth data", default='./*.tif')
@@ -46,7 +57,7 @@ inputFiles=sorted(glob.glob(str(args.input)))
 gtFiles=sorted(glob.glob(str(args.gt)))
 
 
-print("PSNR\t cPSNR\t SSIM\t filename")
+print("PSNR\t cPSNR\t csPSNR\t SSIM\t filename")
 for i in range(len(inputFiles) ):
     iname=inputFiles[i]
     gtname=gtFiles[i%len(gtFiles)]
@@ -58,6 +69,7 @@ for i in range(len(inputFiles) ):
     best_ssim_val = bestSSIM(imgGT, imgIn)
     print(round(PSNR(imgGT,imgIn),2), "\t",
           round(bestPsnr(imgGT,imgIn),2),
+          "\t",round(bestShiftPsnr(imgGT,imgIn),2),
           "\t",round(ssim_val,3),
     #      "\t",round(best_ssim_val,3),"\t" ,
           "\t",os.path.basename(inputFiles[i]) )
