@@ -7,4 +7,6 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=gpu
 
+mkdir results
+mkdir results/o0
 python3 ../n2v/scripts/predictN2V.py --dataPath='./orientations/o0/' --fileName='*.tif' --dims=TYX --name='n2v-simcare-o0' --output='./results/o0/'
