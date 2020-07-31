@@ -7,5 +7,5 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=gpu
 
-python3 ../../../../DnD/script_train_n2v.py --dataPath=./ --name="n2v" --virtualBatchSize=64 --batchSize=1 --learningRate=0.0001 --stdPSF=0 --cropSize=256 --cropsPerImage=16
+python3 ../../../../DnD/script_train_dnd.py --dataPath=./ --name="n2v" --virtualBatchSize=64 --batchSize=1 --learningRate=0.0001 --stdPSF=0 --cropSize=256 --cropsPerImage=16
 
