@@ -63,13 +63,14 @@ for i in range(len(inputFiles) ):
     gtname=gtFiles[i%len(gtFiles)]
     if iname == gtname:
         continue
-    imgIn=imread(iname)
-    imgGT=imread(gtname)
+    imgIn=imread(iname).astype(np.float32)
+    imgGT=imread(gtname).astype(np.float32)
     ssim_val = ssim(imgGT, imgIn, data_range=np.max(imgGT) - np.min(imgGT))
     best_ssim_val = bestSSIM(imgGT, imgIn)
     print(round(PSNR(imgGT,imgIn),2), "\t",
-          round(bestPsnr(imgGT,imgIn),2),
-          "\t",round(bestShiftPsnr(imgGT,imgIn),2),
-          "\t",round(ssim_val,3),
-    #      "\t",round(best_ssim_val,3),"\t" ,
-          "\t",os.path.basename(inputFiles[i]) )
+          round(bestPsnr(imgGT,imgIn),2) )
+#          ,
+#          "\t",round(bestShiftPsnr(imgGT,imgIn),2),
+#          "\t",round(ssim_val,3),
+#          "\t",round(best_ssim_val,3),"\t" ,
+#          "\t",os.path.basename(inputFiles[i]) )
