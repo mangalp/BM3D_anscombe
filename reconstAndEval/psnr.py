@@ -2,7 +2,7 @@ import os
 import sys
 import argparse
 import glob
-from tifffile import imread, imwrite
+from tifffile import imread, imsave
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
 import os
@@ -57,7 +57,7 @@ inputFiles=sorted(glob.glob(str(args.input)))
 gtFiles=sorted(glob.glob(str(args.gt)))
 
 
-print("PSNR\t cPSNR\t csPSNR\t SSIM\t filename")
+print("PSNR\t cPSNR\t filename")
 for i in range(len(inputFiles) ):
     iname=inputFiles[i]
     gtname=gtFiles[i%len(gtFiles)]
@@ -68,9 +68,8 @@ for i in range(len(inputFiles) ):
     ssim_val = ssim(imgGT, imgIn, data_range=np.max(imgGT) - np.min(imgGT))
     best_ssim_val = bestSSIM(imgGT, imgIn)
     print(round(PSNR(imgGT,imgIn),2), "\t",
-          round(bestPsnr(imgGT,imgIn),2) )
-#          ,
+          round(bestPsnr(imgGT,imgIn),2) ,
 #          "\t",round(bestShiftPsnr(imgGT,imgIn),2),
 #          "\t",round(ssim_val,3),
 #          "\t",round(best_ssim_val,3),"\t" ,
-#          "\t",os.path.basename(inputFiles[i]) )
+          "\t",os.path.basename(inputFiles[i]) )
